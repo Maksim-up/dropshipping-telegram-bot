@@ -1,21 +1,26 @@
 require('dotenv').config();
+const express = require('express');
 const TelegramBot = require('node-telegram-bot-api');
 const crypto = require('crypto');
 
 const token = process.env.TELEGRAM_TOKEN;
 const adminChatId = process.env.CHAT_ID;
+const bot = new TelegramBot(token, { webHook: { port: process.env.PORT || 3000 } });
+const app = express();
+app.use(express.json());
 
-const bot = new TelegramBot(token, { polling: true });
+const webhookUrl = `${process.env.WEBHOOK_URL}/bot${token}`;
+bot.setWebHook(webhookUrl);
 
+// Состояния пользователей
 const userStates = {};
-
 const steps = [
   'Введите ваше имя:',
   'Введите ваш телефон:',
   'Введите товар:',
   'Введите размер:',
   'Введите город:',
-  'Введите адрес:',
+  'Введите адрес:'
 ];
 
 const paymentDetails = `
@@ -68,13 +73,13 @@ bot.on('message', (msg) => {
       `🏠 Адрес: ${order.address}`;
 
     bot.sendMessage(adminChatId, adminMessage);
-
-    bot.sendMessage(chatId,
-      `Спасибо за заказ! Ваш номер заказа: #${orderId}\n` +
-      paymentDetails +
-      '\nПосле оплаты пришлите, пожалуйста, подтверждение.'
-    );
+    bot.sendMessage(chatId, `Спасибо за заказ! Ваш номер заказа: #${orderId}\n${paymentDetails}\nПосле оплаты пришлите, пожалуйста, подтверждение.`);
 
     delete userStates[chatId];
   }
+});
+
+app.post(`/bot${token}`, (req, res) => {
+  bot.processUpdate(req.body);
+  res.sendStatus(200);
 });
