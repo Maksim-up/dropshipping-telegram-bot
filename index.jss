@@ -1,23 +1,11 @@
 require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
-const express = require('express');
 const crypto = require('crypto');
 
 const token = process.env.TELEGRAM_TOKEN;
 const adminChatId = process.env.CHAT_ID;
-const port = process.env.PORT || 4000;
 
-const bot = new TelegramBot(token);
-bot.setWebHook(`https://${process.env.HOST}/bot${token}`);
-
-const app = express();
-app.use(express.json());
-
-// Чтобы Telegram присылал обновления сюда
-app.post(`/bot${token}`, (req, res) => {
-  bot.processUpdate(req.body);
-  res.sendStatus(200);
-});
+const bot = new TelegramBot(token, { polling: true });
 
 const userStates = {};
 
@@ -54,24 +42,12 @@ bot.on('message', (msg) => {
   const user = userStates[chatId];
 
   switch (user.step) {
-    case 0:
-      user.data.name = text;
-      break;
-    case 1:
-      user.data.phone = text;
-      break;
-    case 2:
-      user.data.product = text;
-      break;
-    case 3:
-      user.data.size = text;
-      break;
-    case 4:
-      user.data.city = text;
-      break;
-    case 5:
-      user.data.address = text;
-      break;
+    case 0: user.data.name = text; break;
+    case 1: user.data.phone = text; break;
+    case 2: user.data.product = text; break;
+    case 3: user.data.size = text; break;
+    case 4: user.data.city = text; break;
+    case 5: user.data.address = text; break;
   }
 
   user.step++;
@@ -93,17 +69,12 @@ bot.on('message', (msg) => {
 
     bot.sendMessage(adminChatId, adminMessage);
 
-    bot.sendMessage(
-      chatId,
+    bot.sendMessage(chatId,
       `Спасибо за заказ! Ваш номер заказа: #${orderId}\n` +
-        paymentDetails +
-        '\nПосле оплаты пришлите, пожалуйста, подтверждение.'
+      paymentDetails +
+      '\nПосле оплаты пришлите, пожалуйста, подтверждение.'
     );
 
     delete userStates[chatId];
   }
-});
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
 });
