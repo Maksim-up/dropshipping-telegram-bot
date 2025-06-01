@@ -5,7 +5,7 @@ const crypto = require('crypto');
 
 const token = process.env.TELEGRAM_TOKEN;
 const adminChatId = process.env.CHAT_ID;
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 const bot = new TelegramBot(token);
 bot.setWebHook(`https://${process.env.HOST}/bot${token}`);
