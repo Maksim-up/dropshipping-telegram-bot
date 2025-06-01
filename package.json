@@ -1,13 +1,24 @@
 {
-  "name": "telegram-bot-order",
+  "name": "dropshipping-telegram-bot",
   "version": "1.0.0",
+  "description": "Telegram-бот для приёма заказов с Webhook",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
+  "keywords": [
+    "telegram",
+    "bot",
+    "dropshipping",
+    "nodejs",
+    "webhook"
+  ],
+  "author": "Vyugin Maksim",
+  "license": "MIT",
   "dependencies": {
     "crypto": "^1.0.1",
     "dotenv": "^16.3.1",
+    "express": "^4.19.2",
     "node-telegram-bot-api": "^0.61.0"
   }
 }
