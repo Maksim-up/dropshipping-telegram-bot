@@ -6,6 +6,15 @@
   "scripts": {
     "start": "node index.js"
   },
+  "keywords": [
+    "telegram",
+    "bot",
+    "dropshipping",
+    "nodejs",
+    "webhook"
+  ],
+  "author": "Vyugin Maksim",
+  "license": "MIT",
   "dependencies": {
     "crypto": "^1.0.1",
     "dotenv": "^16.3.1",
